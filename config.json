@@ -1,0 +1,10 @@
+{
+    "name": "Prototype",
+    "prefix": "!prefix",
+    "model": "RK-00",
+    "posthouse": "1408285577958391922",
+    "debugchannel": "1307931811325939722",
+    "versions": {
+        "0.1": "Project initialization."
+    }
+}
