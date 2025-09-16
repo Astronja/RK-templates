@@ -1,6 +1,6 @@
 import { Ping } from './commands/ping.js';
 
-export class Prototype {
+export class Command {
     constructor() {
         this.name = 'Prototype';
         this.version = '1.0.0';

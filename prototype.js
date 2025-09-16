@@ -1,5 +1,5 @@
 import { GatewayIntentBits, Client } from "discord.js";
-import { Prototype } from "./Prototype/command.js";
+import { Command } from "./Prototype/command.js";
 import { PRTS } from "./Prototype/prts.js";
 
 export class Prototype {
@@ -39,7 +39,7 @@ export class Prototype {
             }
             if (message.content.startsWith(this.prefix)) {
                 const command = message.content.replace(this.prefix, '').trim();
-                const request = new Prototype();
+                const request = new Command();
                 const response = await request.executeCommand(command);
                 await message.reply(response);
             }
