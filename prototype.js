@@ -71,7 +71,7 @@ export class Prototype {
                     },
                     description: 'Description of the prototype.',
                     thumbnail: {
-                        url: 'https://arknights.wiki.gg/images/9/90/Arknights_Terra_Wiki_logo_diagonal.png',
+                        url: (await this.discordClient.users.fetch('1023608069063717035')).displayAvatarURL({ format: 'png', dynamic: true })
                     },
                     fields: [
                         {
