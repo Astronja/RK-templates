@@ -1,4 +1,4 @@
-import { GatewayIntentBits, Client } from "discord.js";
+import { GatewayIntentBits, Client, ActivityType } from "discord.js";
 import { Command } from "./Prototype/command.js";
 import { PRTS } from "./Prototype/prts.js";
 
@@ -32,6 +32,14 @@ export class Prototype {
         await this.discordClient.login(this.discordToken);
         this.discordClient.once('clientReady', async (c) => {
             this.log(`Logged in as ${c.user.tag}`);
+            if (c.user.username.includes("Ada")) {
+                this.discordClient.user.setPresence({
+                    activities: [{ 
+                        name: `🤓 · Testing as ${this.name}`, 
+                        type: ActivityType.Custom
+                    }]
+                });
+            }
         });
         this.discordClient.on('messageCreate', async (message) => {
             if (message.mentions.has(this.discordClient.user) && message.content.includes('about')) {
