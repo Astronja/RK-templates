@@ -70,7 +70,7 @@ export class Prototype {
         const days = Math.floor(uptime / 86400);
         const hours = Math.floor((uptime % 86400) / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
-        const statusString = `🦉 · v${latestVersion}: ${days}d ${hours}h ${minutes}m`;
+        const statusString = `🤖 · v${latestVersion}: ${days}d ${hours}h ${minutes}m`;
         this.discordClient.user.setPresence({
             activities: [{ 
                 name: statusString,
