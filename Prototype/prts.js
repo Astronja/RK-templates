@@ -7,7 +7,10 @@ export class PRTS {
     }
 
     async receive (id, data) {
-        
+        if (typeof(data) == 'string' && data.startsWith('http')) {
+            const response = await fetch(data);
+            data = await response.json();
+        }
     }
 
     async dispatch (id, data) {

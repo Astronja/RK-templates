@@ -1,3 +1,4 @@
+import { setInterval } from "timers/promises";
 import { GatewayIntentBits, Client, ActivityType } from "discord.js";
 import { Command } from "./Prototype/command.js";
 import { PRTS } from "./Prototype/prts.js";
@@ -32,14 +33,14 @@ export class Prototype {
         await this.discordClient.login(this.discordToken);
         this.discordClient.once('clientReady', async (c) => {
             this.log(`Logged in as ${c.user.tag}`);
-            if (c.user.username.includes("Ada")) {
+            if (c.user.username.includes("Ada") && this.name != "Ada") {
                 this.discordClient.user.setPresence({
                     activities: [{ 
                         name: `🤓 · Testing as ${this.name}`, 
                         type: ActivityType.Custom
                     }]
                 });
-            }
+            } else for await (const _ of setInterval(60000)) await this.updateStatus();
         });
         this.discordClient.on('messageCreate', async (message) => {
             if (message.mentions.has(this.discordClient.user) && message.content.includes('about')) {
@@ -52,14 +53,31 @@ export class Prototype {
                 await message.reply(response);
             }
             if (message.author.bot && message.author.id != this.discordClient.user.id && message.content.startsWith(this.model)) {
-                if (message.channel.id == config.posthouse) { //posthouse
+                if (message.channel.id == this.posthouse) { //posthouse
                     const prts = new PRTS(this.discordClient, this.posthouse);
-                    await prts.receive(message.content, message.files[0]);
+                    await prts.receive(message.content, message.attachments.map(a => a.url)[0]);
+                    if (prts.result != undefined) {
+                        await message.reply(prts.result);
+                    }
                 } else await message.reply("Please send PRTS messages to <#1408285577958391922>.");
             }
         });
     }
 
+    async updateStatus () {
+        const latestVersion = Object.keys(this.config.versions)[Object.keys(this.config.versions).length - 1];
+        const uptime = process.uptime();
+        const days = Math.floor(uptime / 86400);
+        const hours = Math.floor((uptime % 86400) / 3600);
+        const minutes = Math.floor((uptime % 3600) / 60);
+        const statusString = `🦉 · v${latestVersion}: ${days}d ${hours}h ${minutes}m`;
+        this.discordClient.user.setPresence({
+            activities: [{ 
+                name: statusString,
+                type: ActivityType.Custom 
+            }]
+        });
+    }
 
     async about() { //returns a discord embed
         const versionList = this.config.versions;
