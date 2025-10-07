@@ -1,3 +1,4 @@
+import os from "os";
 import { setInterval } from "timers/promises";
 import { GatewayIntentBits, Client, ActivityType } from "discord.js";
 import { Command } from "./Prototype/command.js";
@@ -33,14 +34,18 @@ export class Prototype {
         await this.discordClient.login(this.discordToken);
         this.discordClient.once('clientReady', async (c) => {
             this.log(`Logged in as ${c.user.tag}`);
-            if (c.user.username.includes("Ada") && this.name != "Ada") {
-                this.discordClient.user.setPresence({
-                    activities: [{ 
-                        name: `🤓 · Testing as ${this.name}`, 
-                        type: ActivityType.Custom
-                    }]
-                });
-            } else for await (const _ of setInterval(60000)) await this.updateStatus();
+            if (c.user.username.includes("Ada")) {
+                if (this.name.includes("Prototype") || this.name.includes("Ada")) {
+                    for await (const _ of setInterval(60000)) await this.updateStatus(`👾 · Server Uptime`, os.uptime());
+                } else {
+                    this.discordClient.user.setPresence({
+                        activities: [{ 
+                            name: `🤓 · Testing as ${this.name}`, 
+                            type: ActivityType.Custom
+                        }]
+                    });
+                }
+            } else for await (const _ of setInterval(60000)) await this.updateStatus(`🤖 · ${Object.keys(this.config.versions)[Object.keys(this.config.versions).length - 1]}`, process.uptime());
         });
         this.discordClient.on('messageCreate', async (message) => {
             if (message.mentions.has(this.discordClient.user) && message.content.includes('about')) {
@@ -64,13 +69,11 @@ export class Prototype {
         });
     }
 
-    async updateStatus () {
-        const latestVersion = Object.keys(this.config.versions)[Object.keys(this.config.versions).length - 1];
-        const uptime = process.uptime();
+    async updateStatus (key, uptime) {
         const days = Math.floor(uptime / 86400);
         const hours = Math.floor((uptime % 86400) / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
-        const statusString = `🤖 · ${latestVersion}: ${days}d ${hours}h ${minutes}m`;
+        const statusString = `${key}: ${days}d ${hours}h ${minutes}m`;
         this.discordClient.user.setPresence({
             activities: [{ 
                 name: statusString,
